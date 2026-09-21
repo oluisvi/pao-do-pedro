@@ -1,0 +1,11 @@
+{
+  "name": "Pão do Pedro",
+  "short_name": "Pão do Pedro",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4eee3",
+  "theme_color": "#bd6746",
+  "icons": [
+    {"src": "assets/brand/logo.png", "sizes": "130x130", "type": "image/png"}
+  ]
+}
