@@ -273,3 +273,268 @@ button { font: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .story__media img, .visit__image-wrap img { transform: none !important; }
 }
+
+/* ================================================================
+   MOTION SYSTEM v2 — React + GSAP
+   Preserves the approved mobile-first composition and only upgrades
+   entry choreography, cinematic reel transitions and gallery motion.
+   ================================================================ */
+
+/* New thematic entry: "A casa abre". The actual corridor is framed as
+   the architectural arch before expanding into the existing hero. */
+.entry--house {
+  display: block;
+  background: var(--terracotta);
+  opacity: 1;
+  visibility: visible;
+  transition: none;
+  isolation: isolate;
+}
+.entry--house.is-hidden { display: none; }
+.entry__backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 75% 18%, rgba(255,250,241,.15), transparent 32%),
+    linear-gradient(145deg, #c56d4b 0%, var(--terracotta) 52%, #a85138 100%);
+}
+.entry__portal {
+  position: absolute;
+  left: 50%;
+  bottom: 6svh;
+  width: min(72vw, 470px);
+  height: min(68svh, 720px);
+  transform: translateX(-50%);
+  overflow: hidden;
+  border-radius: 48% 48% 18px 18px / 24% 24% 3% 3%;
+  box-shadow: 0 26px 84px rgba(47,23,15,.26);
+  border: 1px solid rgba(255,250,241,.42);
+  will-change: width, height, border-radius;
+}
+.entry__portal-image,
+.entry__portal-image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.entry__portal-image img {
+  object-fit: cover;
+  object-position: 52% 48%;
+  transform: scale(1.075);
+  will-change: transform;
+}
+.entry__portal-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(20,15,10,.04), rgba(20,15,10,.05) 42%, rgba(20,15,10,.38));
+}
+.entry__brandmark {
+  position: absolute;
+  z-index: 3;
+  left: 22px;
+  top: max(22px, env(safe-area-inset-top));
+}
+.entry__brandmark img {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  box-shadow: 0 10px 34px rgba(0,0,0,.18);
+}
+.entry__copy--house {
+  z-index: 3;
+  left: 22px;
+  right: 22px;
+  bottom: calc(var(--dock-h) + 40px + var(--safe-bottom));
+  color: var(--white);
+  text-shadow: 0 2px 28px rgba(47,23,15,.24);
+}
+.entry__copy--house h1 {
+  max-width: 6ch;
+  font-size: clamp(66px, 20vw, 108px);
+  line-height: .78;
+}
+.entry__eyebrow { opacity: .88; }
+.entry__hint { opacity: .76; }
+.entry.is-ready .entry__hint::after { content: " · pronto"; }
+.entry__threshold {
+  position: absolute;
+  z-index: 4;
+  left: 22px;
+  right: 22px;
+  bottom: calc(var(--dock-h) + 27px + var(--safe-bottom));
+  height: 1px;
+  background: rgba(255,250,241,.66);
+  transform: scaleX(.18);
+  transform-origin: 0 50%;
+}
+
+/* Reel: same composition, smoother interpolation. GSAP owns only the
+   animation properties; layout remains CSS/mobile-first. */
+.reel__scene {
+  opacity: 0;
+  will-change: opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+.reel__scene img {
+  transform: scale(1.055);
+  clip-path: inset(6% 2.5% 6% 2.5% round 30px);
+  will-change: transform, clip-path;
+  backface-visibility: hidden;
+}
+.reel__caption {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  will-change: opacity, transform;
+}
+.reel__soft-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 54%, rgba(13,11,9,.14));
+  z-index: 4;
+}
+
+/* Infinite editorial gallery. Two identical React groups move as one,
+   so the seam is mathematically continuous instead of snapping. */
+.gallery--infinite {
+  position: relative;
+  padding: 36px 0 44px;
+}
+.gallery__viewport {
+  width: 100%;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+.gallery--infinite .gallery__track {
+  display: flex;
+  width: max-content;
+  gap: 0;
+  overflow: visible;
+  padding: 0;
+  scroll-snap-type: none;
+  will-change: transform;
+}
+.gallery__group {
+  display: flex;
+  flex: none;
+  gap: 10px;
+  padding: 0 10px 18px 0;
+}
+.gallery__group:first-child { padding-left: 20px; }
+.gallery__item {
+  flex: 0 0 min(77vw, 330px);
+  scroll-snap-align: none;
+}
+.gallery__item picture { display: block; }
+.gallery--infinite .gallery__item img {
+  width: 100%;
+  height: 54vh;
+  min-height: 430px;
+  object-fit: cover;
+  border-radius: 24px 24px 8px 8px;
+}
+.gallery--infinite .gallery__item--arch img {
+  border-radius: 46% 46% 8px 8px / 22% 22% 2% 2%;
+}
+.gallery__hint {
+  margin: 6px 20px 0;
+  font-family: var(--serif);
+  font-size: clamp(26px, 8vw, 48px);
+  line-height: 1;
+  letter-spacing: -.04em;
+  opacity: .28;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* JS-off safety: keep the static accessible reel supplied in index.html. */
+.no-js #reel-react-root,
+.no-js #gallery-react-root { display: none; }
+.no-js .reel-fallback { display: grid; background: var(--cream); padding: 16px 16px 90px; gap: 48px; }
+
+@media (min-width: 700px) {
+  .entry__portal {
+    width: min(56vw, 520px);
+    height: min(74svh, 760px);
+    bottom: 7svh;
+  }
+  .entry__brandmark { left: 6vw; top: 7vh; }
+  .entry__copy--house { left: 7vw; right: auto; width: 44vw; bottom: 12vh; }
+  .entry__threshold { left: 7vw; right: auto; width: 38vw; bottom: 9vh; }
+
+  .gallery__group {
+    gap: 16px;
+    padding-right: 16px;
+  }
+  .gallery__group:first-child { padding-left: 6vw; }
+  .gallery__item { flex-basis: min(44vw, 420px); }
+  .gallery__hint { margin-inline: 6vw; }
+}
+
+@media (min-width: 900px) {
+  .entry__portal {
+    left: auto;
+    right: 5vw;
+    bottom: 5vh;
+    transform: none;
+    width: min(47vw, 760px);
+    height: 90vh;
+    border-radius: 46% 46% 22px 22px / 18% 18% 2% 2%;
+  }
+  .entry__portal-image img { object-position: center 54%; }
+  .entry__brandmark { left: 7vw; top: 8vh; }
+  .entry__copy--house { left: 7vw; bottom: 14vh; width: 36vw; }
+  .entry__copy--house h1 { font-size: min(8.5vw, 132px); }
+  .entry__threshold { left: 7vw; width: min(30vw, 460px); bottom: 10vh; }
+
+  .reel__soft-vignette { background: linear-gradient(90deg, rgba(244,238,227,.03), transparent 32%); }
+
+  .gallery--infinite { padding-block: 58px; }
+  .gallery__group { gap: 18px; padding-right: 18px; }
+  .gallery__item { flex-basis: min(29vw, 430px); }
+  .gallery--infinite .gallery__item img { height: 68vh; max-height: 780px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entry--house { display: none !important; }
+  .gallery__viewport {
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+  }
+  .gallery__viewport::-webkit-scrollbar { display: none; }
+  .gallery--infinite .gallery__track {
+    transform: none !important;
+    padding-inline: 16px;
+  }
+  .gallery__group { padding-left: 0 !important; }
+  .gallery__group[aria-hidden="true"] { display: none; }
+  .gallery__item { scroll-snap-align: center; }
+}
+.entry--house { z-index: 105; }
+/* Keep both marquee groups geometrically identical so the -50% loop has no seam. */
+.gallery__group { padding-left: 20px; }
+@media (min-width: 700px) { .gallery__group { padding-left: 6vw; } }
+.gallery__motion-toggle {
+  position: absolute;
+  z-index: 3;
+  top: 14px;
+  right: 16px;
+  border: 1px solid rgba(255,255,255,.28);
+  background: rgba(23,20,17,.48);
+  color: var(--white);
+  backdrop-filter: blur(10px);
+  border-radius: 999px;
+  padding: 8px 11px;
+  font: 700 10px/1 var(--sans);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.gallery__motion-toggle:focus-visible { outline: 2px solid var(--white); outline-offset: 3px; }
+@media (min-width: 900px) { .gallery__motion-toggle { top: 22px; right: 6vw; } }
+@media (prefers-reduced-motion: reduce) { .gallery__motion-toggle { display: none; } }
+/* GSAP now owns these transforms; avoid CSS transition interpolation fighting the timeline. */
+.story__media img, .visit__image-wrap img { transition: none; }

@@ -102,19 +102,24 @@
     </a>
   </aside>
 
-  <div id="entry" class="entry" aria-hidden="true">
-    <picture class="entry__image">
-      <source type="image/webp" srcset="assets/images/entry-corridor-420.webp 420w, assets/images/entry-corridor-532.webp 532w" sizes="100vw" />
-      <img src="assets/images/entry-corridor-532.jpg" alt="" fetchpriority="high" />
-    </picture>
-    <div class="entry__wash"></div>
-    <div class="entry__arch" aria-hidden="true"></div>
-    <div class="entry__copy">
-      <img src="assets/brand/logo.png" width="72" height="72" alt="" />
-      <p>Fermentação natural · Jacareí</p>
-      <h1>Entre.</h1>
-      <span class="entry__hint">Preparando a casa</span>
+  <div id="entry" class="entry entry--house" aria-hidden="true">
+    <div class="entry__backdrop" aria-hidden="true"></div>
+    <div class="entry__portal" aria-hidden="true">
+      <picture class="entry__portal-image">
+        <source type="image/webp" srcset="assets/images/entry-corridor-420.webp 420w, assets/images/entry-corridor-532.webp 532w" sizes="100vw" />
+        <img src="assets/images/entry-corridor-532.jpg" alt="" fetchpriority="high" />
+      </picture>
+      <div class="entry__portal-shade"></div>
     </div>
+    <div class="entry__brandmark">
+      <img src="assets/brand/logo.png" width="64" height="64" alt="" />
+    </div>
+    <div class="entry__copy entry__copy--house">
+      <p class="entry__eyebrow">Pão do Pedro · Jacareí</p>
+      <h1>A casa<br />abre.</h1>
+      <span class="entry__hint">Preparando a primeira fornada</span>
+    </div>
+    <span class="entry__threshold" aria-hidden="true"></span>
   </div>
 
   <main id="conteudo">
@@ -133,84 +138,7 @@
       </picture>
     </section>
 
-    <section id="reel" class="reel" aria-label="Uma visita ao Pão do Pedro">
-      <div class="reel__sticky">
-        <div class="reel__media-frame" aria-hidden="true">
-          <figure class="reel__scene" data-scene="0">
-            <picture>
-              <source type="image/webp" srcset="assets/images/patio-arches-420.webp 420w, assets/images/patio-arches-709.webp 709w" sizes="(min-width: 900px) 58vw, 100vw" />
-              <img src="assets/images/patio-arches-709.jpg" alt="" loading="eager" />
-            </picture>
-          </figure>
-          <figure class="reel__scene" data-scene="1">
-            <picture>
-              <source type="image/webp" srcset="assets/images/bread-hand-420.webp 420w, assets/images/bread-hand-707.webp 707w" sizes="(min-width: 900px) 58vw, 100vw" />
-              <img src="assets/images/bread-hand-707.jpg" alt="" loading="lazy" />
-            </picture>
-          </figure>
-          <figure class="reel__scene" data-scene="2">
-            <picture>
-              <source type="image/webp" srcset="assets/images/pedro-making-420.webp 420w, assets/images/pedro-making-706.webp 706w" sizes="(min-width: 900px) 58vw, 100vw" />
-              <img src="assets/images/pedro-making-706.jpg" alt="" loading="lazy" />
-            </picture>
-          </figure>
-          <figure class="reel__scene" data-scene="3">
-            <picture>
-              <source type="image/webp" srcset="assets/images/pedro-portrait-420.webp 420w, assets/images/pedro-portrait-704.webp 704w" sizes="(min-width: 900px) 58vw, 100vw" />
-              <img src="assets/images/pedro-portrait-704.jpg" alt="" loading="lazy" />
-            </picture>
-          </figure>
-          <figure class="reel__scene" data-scene="4">
-            <picture>
-              <source type="image/webp" srcset="assets/images/coffee-croissants-420.webp 420w, assets/images/coffee-croissants-755.webp 755w" sizes="(min-width: 900px) 58vw, 100vw" />
-              <img src="assets/images/coffee-croissants-755.jpg" alt="" loading="lazy" />
-            </picture>
-          </figure>
-          <figure class="reel__scene" data-scene="5">
-            <picture>
-              <source type="image/webp" srcset="assets/images/brunch-overhead-420.webp 420w, assets/images/brunch-overhead-709.webp 709w" sizes="(min-width: 900px) 58vw, 100vw" />
-              <img src="assets/images/brunch-overhead-709.jpg" alt="" loading="lazy" />
-            </picture>
-          </figure>
-          <div class="reel__arch-outline"></div>
-          <div class="reel__grain"></div>
-        </div>
-
-        <div class="reel__copy" aria-live="off">
-          <article class="reel__caption" data-caption="0">
-            <p class="eyebrow">01 · A casa</p>
-            <h2>Terracota, verde e mesa posta.</h2>
-            <p>A linguagem visual nasce do próprio lugar — dos arcos, da madeira, das plantas e da luz natural.</p>
-          </article>
-          <article class="reel__caption" data-caption="1">
-            <p class="eyebrow">02 · Matéria</p>
-            <h2>Farinha. Água. Sal. Tempo.</h2>
-            <p>Alguns pães passam de 24 horas em fermentação natural. O resultado aparece na crosta, no miolo e no aroma.</p>
-          </article>
-          <article class="reel__caption" data-caption="2">
-            <p class="eyebrow">03 · Mãos</p>
-            <h2>Feito perto, feito à mão.</h2>
-            <p>O processo não fica escondido atrás do produto. É parte da experiência — do preparo à mesa.</p>
-          </article>
-          <article class="reel__caption" data-caption="3">
-            <p class="eyebrow">04 · Pedro</p>
-            <h2>Pão do Pedro. Literalmente.</h2>
-            <p>Uma história que começou pequena e ganhou endereço, balcão, café e gente chegando para ficar.</p>
-          </article>
-          <article class="reel__caption" data-caption="4">
-            <p class="eyebrow">05 · Café</p>
-            <h2>No fim de semana, a casa abre cedo.</h2>
-            <p>Sábado e domingo, das 8h às 12h. Café, pão, brunch e tempo para sentar.</p>
-          </article>
-          <article class="reel__caption" data-caption="5">
-            <p class="eyebrow">06 · Mesa</p>
-            <h2>Sente. O resto acontece aqui.</h2>
-            <p>O pão deixa de ser produto e vira encontro — a última transformação da experiência.</p>
-          </article>
-        </div>
-        <div class="reel__progress" aria-hidden="true"><span></span></div>
-      </div>
-    </section>
+    <div id="reel-react-root"></div>
 
     <section class="reel-fallback" aria-label="Pão do Pedro em imagens">
       <article>
@@ -247,26 +175,7 @@
       </ol>
     </section>
 
-    <section class="gallery" aria-label="Comida, café e bastidores">
-      <div class="gallery__track">
-        <figure class="gallery__item gallery__item--tall">
-          <img src="assets/images/product-plate-473.jpg" alt="Prato servido no Pão do Pedro" loading="lazy" />
-          <figcaption>Chega mais perto.</figcaption>
-        </figure>
-        <figure class="gallery__item">
-          <img src="assets/images/table-spread-445.jpg" alt="Mesa com pratos e café" loading="lazy" />
-          <figcaption>Mesa cheia, sem pressa.</figcaption>
-        </figure>
-        <figure class="gallery__item gallery__item--arch">
-          <img src="assets/images/patio-plate-756.jpg" alt="Prato servido no pátio" loading="lazy" />
-          <figcaption>Do forno para a casa.</figcaption>
-        </figure>
-        <figure class="gallery__item">
-          <img src="assets/images/bakery-rack-531.jpg" alt="Estantes com pães e plantas" loading="lazy" />
-          <figcaption>Feito aqui.</figcaption>
-        </figure>
-      </div>
-    </section>
+    <div id="gallery-react-root"></div>
 
     <section id="pedro" class="story section-shell">
       <div class="story__media story__media--portrait">
@@ -350,6 +259,6 @@
   <noscript>
     <style>.entry{display:none!important}.reel{display:none!important}.reel-fallback{display:grid!important}</style>
   </noscript>
-  <script src="app.js" defer></script>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
