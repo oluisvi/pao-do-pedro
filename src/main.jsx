@@ -395,7 +395,9 @@ async function setupThematicEntry() {
   const entry = document.querySelector('#entry');
   if (!entry) return;
 
-  const key = 'pao-do-pedro:thematic-entry:v3';
+  // Bump the session key whenever the entrance concept changes so the
+  // new scene can be tested once without clearing storage manually.
+  const key = 'pao-do-pedro:thematic-entry:v4-door';
   const hasStorage = storageAvailable();
   const seen = hasStorage && sessionStorage.getItem(key) === '1';
 
@@ -405,70 +407,115 @@ async function setupThematicEntry() {
     return;
   }
 
+  // The real site is already mounted behind the entrance. We only wait
+  // for the image shared by the entrance and hero, with a safety timeout.
   const readiness = Promise.all([
-    preloadImage('assets/images/entry-corridor-532.webp'),
-    preloadImage('assets/images/patio-arches-709.webp')
+    preloadImage('assets/images/entry-corridor-532.webp')
   ]);
-  const timeout = new Promise((resolve) => window.setTimeout(resolve, 4800));
+  const timeout = new Promise((resolve) => window.setTimeout(resolve, 3600));
   await Promise.race([readiness, timeout]);
 
   entry.classList.add('is-ready');
-  await new Promise((resolve) => window.setTimeout(resolve, 220));
+  await new Promise((resolve) => window.setTimeout(resolve, 180));
+
+  const doorway = entry.querySelector('.entry__doorway');
+  const corridor = entry.querySelector('.entry__door-reveal img');
+  const shade = entry.querySelector('.entry__door-reveal-shade');
+  const leftDoor = entry.querySelector('.entry__door-leaf--left');
+  const rightDoor = entry.querySelector('.entry__door-leaf--right');
+  const copy = entry.querySelector('.entry__door-copy');
+  const brand = entry.querySelector('.entry__door-brand');
+  const wall = entry.querySelector('.entry__door-wall');
+
+  if (!doorway || !corridor || !leftDoor || !rightDoor) {
+    entry.classList.add('is-hidden');
+    gsap.set(entry, { autoAlpha: 0 });
+    return;
+  }
 
   if (hasStorage) {
-    try { sessionStorage.setItem(key, '1'); } catch { /* safe fallback */ }
+    try { sessionStorage.setItem(key, '1'); } catch { /* non-blocking */ }
   }
 
   entry.classList.add('is-opening');
-  const portal = entry.querySelector('.entry__portal');
-  const portalImage = entry.querySelector('.entry__portal-image img');
-  const copy = entry.querySelector('.entry__copy');
-  const brandmark = entry.querySelector('.entry__brandmark');
-  const threshold = entry.querySelector('.entry__threshold');
-  const backdrop = entry.querySelector('.entry__backdrop');
 
+  gsap.set([leftDoor, rightDoor], { rotateY: 0, force3D: true });
+  gsap.set(corridor, { scale: 1.065, yPercent: 0.8, force3D: true });
+
+  const isDesktop = window.matchMedia('(min-width: 900px)').matches;
   const tl = gsap.timeline({
-    defaults: { overwrite: true },
-    onComplete: () => entry.classList.add('is-hidden')
+    defaults: { overwrite: 'auto' },
+    onComplete: () => {
+      entry.classList.add('is-hidden');
+      gsap.set(entry, { autoAlpha: 0 });
+    }
   });
 
-  tl.to([copy, brandmark], {
+  // First, quiet the copy. Then the two physical leaves swing away from
+  // the centre seam, revealing the actual corridor behind them.
+  tl.to([copy, brand], {
     autoAlpha: 0,
-    y: -12,
-    duration: 0.34,
+    y: -10,
+    duration: 0.28,
     ease: 'power2.out'
   }, 0)
-    .to(threshold, {
-      scaleX: 1,
-      duration: 0.58,
-      ease: 'power2.inOut'
-    }, 0.02)
-    .to(portal, {
-      width: '112vw',
-      height: '112svh',
-      bottom: '-6svh',
-      borderRadius: '0px',
-      duration: 1.18,
+    .to(leftDoor, {
+      rotateY: -104,
+      duration: 1.08,
       ease: 'power3.inOut'
-    }, 0.08)
-    .to(portalImage, {
+    }, 0.10)
+    .to(rightDoor, {
+      rotateY: 104,
+      duration: 1.08,
+      ease: 'power3.inOut'
+    }, 0.10)
+    .to(corridor, {
       scale: 1,
-      yPercent: -0.8,
-      duration: 1.2,
-      ease: 'power3.inOut'
+      yPercent: 0,
+      duration: 1.18,
+      ease: 'power3.out'
     }, 0.08)
-    .to(backdrop, {
-      opacity: 0,
-      duration: 0.72,
+    .to(shade, {
+      opacity: 0.08,
+      duration: 0.70,
       ease: 'power2.out'
-    }, 0.42)
-    .to(entry, {
-      autoAlpha: 0,
-      duration: 0.38,
-      ease: 'power2.out'
-    }, 0.92);
-}
+    }, 0.42);
 
+  if (isDesktop) {
+    // Desktop doorway already shares the hero's image footprint: once the
+    // doors are open, dissolve the terracotta wall into the existing hero.
+    tl.to(wall, {
+      autoAlpha: 0,
+      duration: 0.58,
+      ease: 'power2.out'
+    }, 0.92)
+      .to(entry, {
+        autoAlpha: 0,
+        duration: 0.46,
+        ease: 'power2.out'
+      }, 1.16);
+  } else {
+    // On mobile the hero image is full viewport. Let the opened doorway
+    // become the viewport itself before handing control to the page.
+    tl.to(doorway, {
+      width: '106vw',
+      height: '106svh',
+      borderRadius: '0px',
+      duration: 0.72,
+      ease: 'power3.inOut'
+    }, 0.92)
+      .to(wall, {
+        autoAlpha: 0,
+        duration: 0.48,
+        ease: 'power2.out'
+      }, 1.02)
+      .to(entry, {
+        autoAlpha: 0,
+        duration: 0.34,
+        ease: 'power2.out'
+      }, 1.40);
+  }
+}
 function setupAmbientMotion() {
   if (reduceMotion) return () => undefined;
 

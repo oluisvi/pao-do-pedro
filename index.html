@@ -102,24 +102,43 @@
     </a>
   </aside>
 
-  <div id="entry" class="entry entry--house" aria-hidden="true">
-    <div class="entry__backdrop" aria-hidden="true"></div>
-    <div class="entry__portal" aria-hidden="true">
-      <picture class="entry__portal-image">
+  <div id="entry" class="entry entry--doors" aria-hidden="true">
+    <div class="entry__door-wall" aria-hidden="true"></div>
+
+    <div class="entry__doorway" aria-hidden="true">
+      <picture class="entry__door-reveal">
         <source type="image/webp" srcset="assets/images/entry-corridor-420.webp 420w, assets/images/entry-corridor-532.webp 532w" sizes="100vw" />
-        <img src="assets/images/entry-corridor-532.jpg" alt="" fetchpriority="high" />
+        <img src="assets/images/entry-corridor-532.jpg" alt="" fetchpriority="high" decoding="sync" />
       </picture>
-      <div class="entry__portal-shade"></div>
+      <div class="entry__door-reveal-shade"></div>
+
+      <div class="entry__door-leaves">
+        <div class="entry__door-leaf entry__door-leaf--left">
+          <div class="entry__door-face">
+            <span class="entry__door-groove entry__door-groove--top"></span>
+            <span class="entry__door-groove entry__door-groove--bottom"></span>
+            <span class="entry__door-handle entry__door-handle--left"></span>
+          </div>
+        </div>
+        <div class="entry__door-leaf entry__door-leaf--right">
+          <div class="entry__door-face">
+            <span class="entry__door-groove entry__door-groove--top"></span>
+            <span class="entry__door-groove entry__door-groove--bottom"></span>
+            <span class="entry__door-handle entry__door-handle--right"></span>
+          </div>
+        </div>
+      </div>
+      <span class="entry__door-frame-line"></span>
     </div>
-    <div class="entry__brandmark">
-      <img src="assets/brand/logo.png" width="64" height="64" alt="" />
+
+    <div class="entry__door-brand">
+      <img src="assets/brand/logo.png" width="62" height="62" alt="" />
     </div>
-    <div class="entry__copy entry__copy--house">
-      <p class="entry__eyebrow">Pão do Pedro · Jacareí</p>
-      <h1>A casa<br />abre.</h1>
-      <span class="entry__hint">Preparando a primeira fornada</span>
+    <div class="entry__door-copy">
+      <p class="entry__door-eyebrow">Pão do Pedro · Jacareí</p>
+      <h1>Entre.</h1>
+      <span class="entry__door-status">Abrindo a casa</span>
     </div>
-    <span class="entry__threshold" aria-hidden="true"></span>
   </div>
 
   <main id="conteudo">
