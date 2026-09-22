@@ -63,7 +63,17 @@ const reelScenes = [
     title: 'Sente. O resto acontece aqui.',
     body: 'O pão deixa de ser produto e vira encontro — a última transformação da experiência.'
   }
-];
+ ];
+
+const upgradedPngAssets = new Set([
+  'patio-plate-756',
+  'bakery-rack-531',
+  'cookies-755',
+  'coffee-croissants-755',
+  'bread-hand-707',
+  'packaging-756',
+  'patio-depth-709'
+]);
 
 const galleryItems = [
   { src: 'product-plate-473', small: 'product-plate-420', width: 473, alt: 'Prato servido no Pão do Pedro', caption: 'Chega mais perto.', shape: 'tall' },
@@ -194,13 +204,8 @@ function ReelExperience() {
           {reelScenes.map((scene, index) => (
             <figure className="reel__scene" data-scene={index} key={scene.image} style={{ '--pos': scene.position }}>
               <picture>
-                <source
-                  type="image/webp"
-                  srcSet={`assets/images/${scene.small}.webp 420w, assets/images/${scene.image}.webp ${scene.width}w`}
-                  sizes="(min-width: 900px) 58vw, 100vw"
-                />
                 <img
-                  src={`assets/images/${scene.image}.jpg`}
+                  src={`assets/images/${scene.image}.png`}
                   alt=""
                   loading={index < 2 ? 'eager' : 'lazy'}
                   decoding="async"
@@ -229,21 +234,32 @@ function ReelExperience() {
 }
 
 function GalleryFigure({ item, duplicate = false }) {
+  const usesUpgradedPng = upgradedPngAssets.has(item.src);
+
   return (
     <figure className={`gallery__item${item.shape ? ` gallery__item--${item.shape}` : ''}`}>
-      <picture>
-        <source
-          type="image/webp"
-          srcSet={`assets/images/${item.small}.webp 420w, assets/images/${item.src}.webp ${item.width}w`}
-          sizes="(min-width: 900px) 30vw, 77vw"
-        />
+      {usesUpgradedPng ? (
         <img
-          src={`assets/images/${item.src}.jpg`}
+          src={`assets/images/${item.src}.png`}
           alt={duplicate ? '' : item.alt}
           loading="lazy"
           decoding="async"
         />
-      </picture>
+      ) : (
+        <picture>
+          <source
+            type="image/webp"
+            srcSet={`assets/images/${item.small}.webp 420w, assets/images/${item.src}.webp ${item.width}w`}
+            sizes="(min-width: 900px) 30vw, 77vw"
+          />
+          <img
+            src={`assets/images/${item.src}.jpg`}
+            alt={duplicate ? '' : item.alt}
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
+      )}
       <figcaption aria-hidden={duplicate ? 'true' : undefined}>{item.caption}</figcaption>
     </figure>
   );
@@ -368,17 +384,6 @@ function setupMenu() {
   };
 }
 
-function storageAvailable() {
-  try {
-    const key = '__pdp_motion_test__';
-    sessionStorage.setItem(key, '1');
-    sessionStorage.removeItem(key);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 function preloadImage(src) {
   return new Promise((resolve) => {
     const image = new Image();
@@ -395,13 +400,9 @@ async function setupThematicEntry() {
   const entry = document.querySelector('#entry');
   if (!entry) return;
 
-  // Bump the session key whenever the entrance concept changes so the
-  // new scene can be tested once without clearing storage manually.
-  const key = 'pao-do-pedro:thematic-entry:v4-door-handoff-v2';
-  const hasStorage = storageAvailable();
-  const seen = hasStorage && sessionStorage.getItem(key) === '1';
-
-  if (reduceMotion || seen) {
+  // The entrance intentionally runs on every full page load/reload.
+  // Only reduced-motion users skip the cinematic opening.
+  if (reduceMotion) {
     entry.classList.add('is-hidden');
     gsap.set(entry, { autoAlpha: 0 });
     return;
@@ -454,7 +455,7 @@ async function setupThematicEntry() {
   // The real site is already mounted behind the entrance. We only wait
   // for the image shared by the entrance and hero, with a safety timeout.
   const readiness = Promise.all([
-    preloadImage('assets/images/entry-corridor-532.webp')
+    preloadImage('assets/images/entry-corridor-532.png')
   ]);
   const timeout = new Promise((resolve) => window.setTimeout(resolve, 3600));
   await Promise.race([readiness, timeout]);
@@ -475,10 +476,6 @@ async function setupThematicEntry() {
     entry.classList.add('is-hidden');
     gsap.set(entry, { autoAlpha: 0 });
     return;
-  }
-
-  if (hasStorage) {
-    try { sessionStorage.setItem(key, '1'); } catch { /* non-blocking */ }
   }
 
   entry.classList.add('is-opening');
