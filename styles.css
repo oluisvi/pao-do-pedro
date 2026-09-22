@@ -61,7 +61,7 @@ button { font: inherit; }
 .order-dock__button span { font-size: 13px; font-weight: 800; }
 .order-dock__button small { margin-top: 4px; font-size: 10px; letter-spacing: .03em; opacity: .7; }
 .order-dock__button--primary { background: var(--ink); color: var(--white); }
-.order-dock__button--whatsapp { background: #e5d9c7; color: var(--ink); border-color: rgba(23,20,17,.08); }
+.order-dock__button--whatsapp { background: #b96237; color: var(--ink); border-color: #17141114; }
 .order-dock__desktop { display: none; }
 
 .entry { position: fixed; z-index: 80; inset: 0; overflow: hidden; background: var(--ink); color: var(--white); pointer-events: none; opacity: 1; visibility: visible; transition: opacity .55s ease, visibility .55s ease; }
