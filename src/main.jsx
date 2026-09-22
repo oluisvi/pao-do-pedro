@@ -63,7 +63,17 @@ const reelScenes = [
     title: 'Sente. O resto acontece aqui.',
     body: 'O pão deixa de ser produto e vira encontro — a última transformação da experiência.'
   }
-];
+ ];
+
+const upgradedPngAssets = new Set([
+  'patio-plate-756',
+  'bakery-rack-531',
+  'cookies-755',
+  'coffee-croissants-755',
+  'bread-hand-707',
+  'packaging-756',
+  'patio-depth-709'
+]);
 
 const galleryItems = [
   { src: 'product-plate-473', small: 'product-plate-420', width: 473, alt: 'Prato servido no Pão do Pedro', caption: 'Chega mais perto.', shape: 'tall' },
@@ -194,13 +204,8 @@ function ReelExperience() {
           {reelScenes.map((scene, index) => (
             <figure className="reel__scene" data-scene={index} key={scene.image} style={{ '--pos': scene.position }}>
               <picture>
-                <source
-                  type="image/webp"
-                  srcSet={`assets/images/${scene.small}.webp 420w, assets/images/${scene.image}.webp ${scene.width}w`}
-                  sizes="(min-width: 900px) 58vw, 100vw"
-                />
                 <img
-                  src={`assets/images/${scene.image}.jpg`}
+                  src={`assets/images/${scene.image}.png`}
                   alt=""
                   loading={index < 2 ? 'eager' : 'lazy'}
                   decoding="async"
@@ -229,21 +234,32 @@ function ReelExperience() {
 }
 
 function GalleryFigure({ item, duplicate = false }) {
+  const usesUpgradedPng = upgradedPngAssets.has(item.src);
+
   return (
     <figure className={`gallery__item${item.shape ? ` gallery__item--${item.shape}` : ''}`}>
-      <picture>
-        <source
-          type="image/webp"
-          srcSet={`assets/images/${item.small}.webp 420w, assets/images/${item.src}.webp ${item.width}w`}
-          sizes="(min-width: 900px) 30vw, 77vw"
-        />
+      {usesUpgradedPng ? (
         <img
-          src={`assets/images/${item.src}.jpg`}
+          src={`assets/images/${item.src}.png`}
           alt={duplicate ? '' : item.alt}
           loading="lazy"
           decoding="async"
         />
-      </picture>
+      ) : (
+        <picture>
+          <source
+            type="image/webp"
+            srcSet={`assets/images/${item.small}.webp 420w, assets/images/${item.src}.webp ${item.width}w`}
+            sizes="(min-width: 900px) 30vw, 77vw"
+          />
+          <img
+            src={`assets/images/${item.src}.jpg`}
+            alt={duplicate ? '' : item.alt}
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
+      )}
       <figcaption aria-hidden={duplicate ? 'true' : undefined}>{item.caption}</figcaption>
     </figure>
   );
@@ -397,7 +413,7 @@ async function setupThematicEntry() {
 
   // Bump the session key whenever the entrance concept changes so the
   // new scene can be tested once without clearing storage manually.
-  const key = 'pao-do-pedro:thematic-entry:v4-door';
+  const key = 'pao-do-pedro:thematic-entry:v4-door-handoff-v2';
   const hasStorage = storageAvailable();
   const seen = hasStorage && sessionStorage.getItem(key) === '1';
 
@@ -407,10 +423,54 @@ async function setupThematicEntry() {
     return;
   }
 
+  // Keep the finished hero completely quiet behind the entrance. This
+  // prevents copy/header elements from appearing during the final zoom and
+  // lets the doorway hand off to a clean photograph before UI returns.
+  const heroItems = gsap.utils.toArray('.hero__content > *');
+  const heroArch = document.querySelector('.hero__arch');
+  const siteHeader = document.querySelector('.site-header');
+
+  gsap.set(heroItems, { autoAlpha: 0, y: 34 });
+  if (heroArch) gsap.set(heroArch, { autoAlpha: 0, scale: 0.985, transformOrigin: '50% 70%' });
+  if (siteHeader) gsap.set(siteHeader, { autoAlpha: 0, y: 16 });
+
+  const revealHero = () => {
+    const reveal = gsap.timeline({ defaults: { overwrite: 'auto' } });
+
+    // First give the real hero image a tiny beat on its own. Then bring the
+    // interface back from below in a stagger, so the handoff reads as one
+    // continuous scene instead of an overlay disappearing over finished UI.
+    if (heroArch) {
+      reveal.to(heroArch, {
+        autoAlpha: 1,
+        scale: 1,
+        duration: 0.68,
+        ease: 'power3.out'
+      }, 0.06);
+    }
+
+    if (siteHeader) {
+      reveal.to(siteHeader, {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.48,
+        ease: 'power3.out'
+      }, 0.10);
+    }
+
+    reveal.to(heroItems, {
+      autoAlpha: 1,
+      y: 0,
+      duration: 0.72,
+      stagger: 0.085,
+      ease: 'power3.out'
+    }, 0.16);
+  };
+
   // The real site is already mounted behind the entrance. We only wait
   // for the image shared by the entrance and hero, with a safety timeout.
   const readiness = Promise.all([
-    preloadImage('assets/images/entry-corridor-532.webp')
+    preloadImage('assets/images/entry-corridor-532.png')
   ]);
   const timeout = new Promise((resolve) => window.setTimeout(resolve, 3600));
   await Promise.race([readiness, timeout]);
@@ -448,6 +508,7 @@ async function setupThematicEntry() {
     onComplete: () => {
       entry.classList.add('is-hidden');
       gsap.set(entry, { autoAlpha: 0 });
+      revealHero();
     }
   });
 
@@ -539,8 +600,11 @@ function setupAmbientMotion() {
       const houseImage = document.querySelector('.house__image img');
 
       if (heroImage) {
-        gsap.fromTo(heroImage, { scale: 1.035, yPercent: -1.5 }, {
-          scale: 1,
+        // Start from the exact CSS/entrance handoff frame. A fromTo here used
+        // to force scale: 1.035 before the entrance had finished fading,
+        // which produced the visible post-entry zoom snap.
+        gsap.to(heroImage, {
+          scale: 1.018,
           yPercent: 2.5,
           ease: 'none',
           scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1 }
